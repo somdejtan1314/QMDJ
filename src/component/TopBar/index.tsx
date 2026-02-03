@@ -7,6 +7,7 @@ import {AngleDevilToggleButton} from "@/component/TopBar/AngleDevilToggleButton"
 import {ZhiToggleButton} from "@/component/TopBar/ZhiToggleButton";
 import {YinYangToggleButton} from "@/component/TopBar/YinYangToggleButton";
 import {NeonToggleButton} from "@/component/TopBar/NeonToggleButton";
+import {JiToggleButton} from "@/component/TopBar/JiToggleButton";
 import type {遁} from "@/qimen/type";
 import type {ColorVariant, Density} from "@/types/displayTypes";
 
@@ -22,6 +23,8 @@ interface Props {
     density: Density;
     showZhiRing: boolean;
     setShowZhiRing: React.Dispatch<React.SetStateAction<boolean>>;
+    showJiPanel: boolean;
+    setShowJiPanel: React.Dispatch<React.SetStateAction<boolean>>;
     dun: 遁;
     toggleDun: () => void;
 }
@@ -39,6 +42,8 @@ export const TopBar = React.memo<Props>(
         density,
         showZhiRing,
         setShowZhiRing,
+        showJiPanel,
+        setShowJiPanel,
         dun,
         toggleDun,
     }) => {
@@ -84,6 +89,7 @@ export const TopBar = React.memo<Props>(
                     <ScoreToggleButton enabled={isScoreMode} setEnabled={setScoreMode} />
                     <AngleDevilToggleButton enabled={showAngelDevil} setEnabled={setShowAngelDevil} />
                     <ZhiToggleButton enabled={showZhiRing} setEnabled={setShowZhiRing} />
+                    <JiToggleButton enabled={showJiPanel} setEnabled={setShowJiPanel} />
                     <YinYangToggleButton dun={dun} onToggle={toggleDun} />
                     <NeonToggleButton enabled={colorVariant === "neon"} setEnabled={setColorVariant} />
                 </Flex>
