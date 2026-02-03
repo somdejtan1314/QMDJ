@@ -1,14 +1,13 @@
 import React from "react";
 import {Flex, GridItem, useColorModeValue} from "@chakra-ui/react";
 import {Circle} from "./Circle";
-import {QimenCell, 八神, 八門, 八字, 天干, 宮位} from "@/qimen/type";
+import {QimenCell, 八門, 八字, 天干, 宮位} from "@/qimen/type";
 import {Gan} from "./Gan";
 import {God} from "./God";
 import {Door} from "./Door";
 import {Star} from "./Star";
 import {Room} from "./Room";
 import {FourDangerUtil} from "@/util/FourDangerUtil";
-import {ScoreModeUtil} from "@/util/ScoreModeUtil";
 import {TwelveCycleUtil} from "@/util/TwelveCycleUtil";
 import {StrengthUtil} from "@/util/StrengthUtil";
 import {Pattern} from "@/component/QimenPanDisplay/Cell/Pattern";
@@ -113,14 +112,7 @@ const cycleOf = (room: 宮位, gan?: 天干) => {
         .join(", ");
 };
 
-const godHighlight = () => {
-    return false;
-};
-
 const doorHighlight = (cell: 宮位, door: 八門) => {
     return FourDangerUtil.isDoorAttackCell(cell, door);
 };
 
-const ganHighlight = () => {
-    return undefined;
-};
