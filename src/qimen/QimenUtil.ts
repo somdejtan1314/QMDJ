@@ -178,7 +178,7 @@ const 宮位地支 = (宮位: 宮位): 地支[] => {
     return 宮位地支表[宮位];
 };
 
-const create = (lunar: Lunar): QimenPan => {
+const create = (lunar: Lunar, dunOverride?: 遁): QimenPan => {
     const [yearStem, monthStem, dayStem, hourStem] = LunarUtil.八字(lunar);
     const monthGan = monthStem[1] as 地支;
 
@@ -188,7 +188,7 @@ const create = (lunar: Lunar): QimenPan => {
     const solarTerm = LunarUtil.節氣(lunar);
     const solarTermName = solarTerm.getName() as 節氣;
 
-    const yinOrYangDun = 陰遁或陽遁(solarTermName);
+    const yinOrYangDun = dunOverride ?? 陰遁或陽遁(solarTermName);
     const upperMiddleLowerSector = 上中下元(dayStem);
     const inning = 局數(solarTermName, upperMiddleLowerSector);
 

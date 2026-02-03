@@ -1,6 +1,7 @@
 import type {九星, 八神, 八門, 地支, 天干} from "@/qimen/type";
+import type {ColorVariant} from "@/types/displayTypes";
 
-const colorMap = {
+const simpleMap = {
     wood: "green.600",
     fire: "red.500",
     earth: "orange.600",
@@ -8,7 +9,18 @@ const colorMap = {
     water: "blue.600",
 };
 
-const 天干 = (value: 天干): string => {
+const neonMap = {
+    wood: "green.300",
+    fire: "pink.400",
+    earth: "yellow.300",
+    metal: "cyan.300",
+    water: "blue.300",
+};
+
+const pickMap = (variant: ColorVariant) => (variant === "neon" ? neonMap : simpleMap);
+
+const 天干 = (value: 天干, variant: ColorVariant = "simple"): string => {
+    const colorMap = pickMap(variant);
     switch (value) {
         case "甲":
         case "乙":
@@ -28,7 +40,8 @@ const 天干 = (value: 天干): string => {
     }
 };
 
-const 地支 = (value: 地支): string => {
+const 地支 = (value: 地支, variant: ColorVariant = "simple"): string => {
+    const colorMap = pickMap(variant);
     switch (value) {
         case "寅":
         case "卯":
@@ -50,7 +63,8 @@ const 地支 = (value: 地支): string => {
     }
 };
 
-const 八神 = (value: 八神): string => {
+const 八神 = (value: 八神, variant: ColorVariant = "simple"): string => {
+    const colorMap = pickMap(variant);
     switch (value) {
         case "值符":
         case "六合":
@@ -68,7 +82,8 @@ const 八神 = (value: 八神): string => {
     }
 };
 
-const 八門 = (value: 八門): string => {
+const 八門 = (value: 八門, variant: ColorVariant = "simple"): string => {
+    const colorMap = pickMap(variant);
     switch (value) {
         case "休門":
             return colorMap.water;
@@ -86,7 +101,8 @@ const 八門 = (value: 八門): string => {
     }
 };
 
-const 九星 = (value: 九星): string => {
+const 九星 = (value: 九星, variant: ColorVariant = "simple"): string => {
+    const colorMap = pickMap(variant);
     switch (value) {
         case "天蓬":
             return colorMap.water;

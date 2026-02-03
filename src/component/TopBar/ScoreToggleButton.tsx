@@ -19,6 +19,8 @@ export const ScoreToggleButton = React.memo<Props>(({enabled, setEnabled}) => {
             _hover={{}}
             _active={{transform: "scale(0.9)"}}
             size={smallButtonSize}
+            w="93px"
+            h="36px"
             aria-label="current"
             onClick={() => setEnabled(_ => !_)}
             mx={{base: 0.5, md: 1}}

@@ -1,13 +1,13 @@
 import React from "react";
+import {ViewIcon} from "@chakra-ui/icons";
 import {Button, Text, useBreakpointValue} from "@chakra-ui/react";
-import {MoonIcon} from "@chakra-ui/icons";
 
 interface Props {
     enabled: boolean;
     setEnabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const AngleDevilToggleButton = React.memo<Props>(({enabled, setEnabled}) => {
+export const ZhiToggleButton = React.memo<Props>(({enabled, setEnabled}) => {
     const smallButtonSize = useBreakpointValue({base: "sm", md: "md"});
     const iconSize = useBreakpointValue({base: "lg", md: "2xl"});
 
@@ -19,14 +19,14 @@ export const AngleDevilToggleButton = React.memo<Props>(({enabled, setEnabled}) 
             _hover={{}}
             _active={{transform: "scale(0.9)"}}
             size={smallButtonSize}
-            w="93px"
+            w="138px"
             h="36px"
             aria-label="current"
             onClick={() => setEnabled(_ => !_)}
             mx={{base: 0.5, md: 1}}
         >
-            <MoonIcon fontSize={iconSize} />
-            <Text ml={1}>神煞</Text>
+            <ViewIcon fontSize={iconSize} />
+            <Text ml={1}>12地支</Text>
         </Button>
     );
 });
