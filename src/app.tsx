@@ -62,7 +62,7 @@ export const App = React.memo(() => {
                 />
                 <TimeTypeDisplay bazi={qimenPan.八字} density={density} />
                 <Flex flexGrow={1} justifyContent="center" alignItems="center" position="relative" w="full">
-                    <Flex flexDirection="column" alignItems="center" mt="50px" mb="40px">
+                    <Flex flexDirection="column" alignItems="center" mt="20px" mb="20px">
                         <Box position="relative" width={`${panSize}px`} height={`${panSize}px`}>
                         {showZhiRing && (
                             <TwelveDisplay
@@ -91,7 +91,7 @@ export const App = React.memo(() => {
                         )}
                         <QimenPanDisplay isScoreMode={isScoreMode} pan={qimenPan} size={panSize} colorVariant={colorVariant} density={density} />
                         </Box>
-                        <PillBox pan={qimenPan} maxWidth={panSize} mt={40} date={date} dunOverride={dunOverride} />
+                        <PillBox pan={qimenPan} maxWidth={panSize} mt={10} date={date} dunOverride={dunOverride} />
                     </Flex>
                 </Flex>
             </Flex>
@@ -615,6 +615,7 @@ const PillBox = ({
                 borderColor={borderColor}
                 bg={bgColor}
                 color={textColor}
+                fontWeight="bold"
                 borderRadius="md"
                 overflow="hidden"
             >
@@ -645,6 +646,7 @@ const PillBox = ({
                 borderColor={borderColor}
                 bg={bgColor}
                 color={textColor}
+                fontWeight="bold"
                 borderRadius="md"
                 overflow="hidden"
             >
