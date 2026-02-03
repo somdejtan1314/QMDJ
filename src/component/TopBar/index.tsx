@@ -1,11 +1,12 @@
 import React from "react";
-import {Flex, FormControl, FormLabel, HStack, IconButton, Input, Switch, Tooltip, useBreakpointValue, useColorMode, useColorModeValue} from "@chakra-ui/react";
+import {Flex, IconButton, Input, Tooltip, useBreakpointValue, useColorModeValue} from "@chakra-ui/react";
 import {ArrowBackIcon, ArrowForwardIcon, TimeIcon} from "@chakra-ui/icons";
 import moment from "moment";
 import {ScoreToggleButton} from "@/component/TopBar/ScoreToggleButton";
 import {AngleDevilToggleButton} from "@/component/TopBar/AngleDevilToggleButton";
 import {ZhiToggleButton} from "@/component/TopBar/ZhiToggleButton";
 import {YinYangToggleButton} from "@/component/TopBar/YinYangToggleButton";
+import {NeonToggleButton} from "@/component/TopBar/NeonToggleButton";
 import type {遁} from "@/qimen/type";
 import type {ColorVariant, Density} from "@/types/displayTypes";
 
@@ -47,8 +48,6 @@ export const TopBar = React.memo<Props>(
         const buttonSize = useBreakpointValue({base: isCompact ? "sm" : "md", md: isCompact ? "md" : "lg"});
         const iconSize = useBreakpointValue({base: isCompact ? "md" : "lg", md: isCompact ? "xl" : "2xl"});
         const barBg = useColorModeValue("gray.300", "gray.800");
-        const {colorMode, toggleColorMode} = useColorMode();
-
     const previousTwoHours = () => {
         setDate(new Date(date.getTime() - 120 * 60 * 1000));
     };
@@ -86,30 +85,9 @@ export const TopBar = React.memo<Props>(
                 <Flex justifyContent="center" flexWrap="wrap" gap={2}>
                     <ScoreToggleButton enabled={isScoreMode} setEnabled={setScoreMode} />
                     <AngleDevilToggleButton enabled={showAngelDevil} setEnabled={setShowAngelDevil} />
+                    <ZhiToggleButton enabled={showZhiRing} setEnabled={setShowZhiRing} />
                     <YinYangToggleButton dun={dun} onToggle={toggleDun} />
-                    <HStack spacing={2}>
-                        <FormControl display="flex" alignItems="center">
-                            <FormLabel mb="0" fontSize="sm">
-                                深色
-                            </FormLabel>
-                            <Switch size="sm" isChecked={colorMode === "dark"} onChange={toggleColorMode} />
-                        </FormControl>
-                        <FormControl display="flex" alignItems="center">
-                            <FormLabel mb="0" fontSize="sm">
-                                霓虹色
-                            </FormLabel>
-                            <Switch size="sm" isChecked={colorVariant === "neon"} onChange={() => setColorVariant(colorVariant === "neon" ? "simple" : "neon")} />
-                        </FormControl>
-                    </HStack>
-                    <HStack spacing={2}>
-                        <FormControl display="flex" alignItems="center">
-                            <FormLabel mb="0" fontSize="sm">
-                                緊湊
-                            </FormLabel>
-                            <Switch size="sm" isChecked={density === "compact"} onChange={() => setDensity(density === "compact" ? "comfortable" : "compact")} />
-                        </FormControl>
-                        <ZhiToggleButton enabled={showZhiRing} setEnabled={setShowZhiRing} />
-                    </HStack>
+                    <NeonToggleButton enabled={colorVariant === "neon"} setEnabled={setColorVariant} />
                 </Flex>
             </Flex>
         );
