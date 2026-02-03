@@ -20,7 +20,6 @@ interface Props {
     colorVariant: ColorVariant;
     setColorVariant: React.Dispatch<React.SetStateAction<ColorVariant>>;
     density: Density;
-    setDensity: React.Dispatch<React.SetStateAction<Density>>;
     showZhiRing: boolean;
     setShowZhiRing: React.Dispatch<React.SetStateAction<boolean>>;
     dun: 遁;
@@ -38,7 +37,6 @@ export const TopBar = React.memo<Props>(
         colorVariant,
         setColorVariant,
         density,
-        setDensity,
         showZhiRing,
         setShowZhiRing,
         dun,

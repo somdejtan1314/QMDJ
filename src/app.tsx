@@ -23,7 +23,7 @@ export const App = React.memo(() => {
     const [isScoreMode, setScoreMode] = React.useState(false);
     const [showAngelDevil, setShowAngelDevil] = React.useState(false);
     const [colorVariant, setColorVariant] = React.useState<ColorVariant>("simple");
-    const [density, setDensity] = React.useState<Density>("comfortable");
+    const [density] = React.useState<Density>("comfortable");
     const [showZhiRing, setShowZhiRing] = React.useState(false);
     const [dunOverride, setDunOverride] = React.useState<遁 | null>("陰遁");
     const [ref, screenWidth] = useScreenWidth(800);
@@ -53,7 +53,6 @@ export const App = React.memo(() => {
                     colorVariant={colorVariant}
                     setColorVariant={setColorVariant}
                     density={density}
-                    setDensity={setDensity}
                     showZhiRing={showZhiRing}
                     setShowZhiRing={setShowZhiRing}
                     dun={qimenPan.遁}
