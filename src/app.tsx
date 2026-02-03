@@ -1,11 +1,12 @@
 import React from "react";
 import {QimenUtil} from "./qimen/QimenUtil";
 import {Lunar} from "lunar-typescript";
-import {Box, ChakraProvider, Flex, Select, Text, extendTheme, useBreakpointValue, useColorModeValue} from "@chakra-ui/react";
+import {Box, ChakraProvider, Flex, Grid, Select, Text, extendTheme, useBreakpointValue, useColorModeValue} from "@chakra-ui/react";
 import {QimenPanDisplay} from "@/component/QimenPanDisplay";
 import {useKeyboardArrow} from "@/hook/useKeyboardArrow";
 import {TwelveDisplay} from "src/component/TwelveDisplay";
 import {AngelDevilUtil} from "@/util/AngelDevilUtil";
+import {AstrologicalTimeUtil} from "@/qimen/AstrologicalTimeUtil";
 import {八字, 八門, 九星, 地支, 天干, 宮位, 八神, 五行, 遁} from "@/qimen/type";
 import {GodDevilRenderer} from "@/component/GodDevilRenderer";
 import {TopBar} from "@/component/TopBar";
@@ -25,6 +26,7 @@ export const App = React.memo(() => {
     const [colorVariant, setColorVariant] = React.useState<ColorVariant>("simple");
     const [density] = React.useState<Density>("comfortable");
     const [showZhiRing, setShowZhiRing] = React.useState(false);
+    const [showJiPanel, setShowJiPanel] = React.useState(true);
     const [dunOverride, setDunOverride] = React.useState<遁 | null>("陰遁");
     const [ref, screenWidth] = useScreenWidth(800);
     const qimenPan = QimenUtil.create(Lunar.fromDate(date), dunOverride ?? undefined);
@@ -55,6 +57,8 @@ export const App = React.memo(() => {
                     density={density}
                     showZhiRing={showZhiRing}
                     setShowZhiRing={setShowZhiRing}
+                    showJiPanel={showJiPanel}
+                    setShowJiPanel={setShowJiPanel}
                     dun={qimenPan.遁}
                     toggleDun={() =>
                         setDunOverride(current => ((current ?? qimenPan.遁) === "陽遁" ? "陰遁" : "陽遁"))
@@ -91,7 +95,7 @@ export const App = React.memo(() => {
                         )}
                         <QimenPanDisplay isScoreMode={isScoreMode} pan={qimenPan} size={panSize} colorVariant={colorVariant} density={density} />
                         </Box>
-                        <PillBox pan={qimenPan} maxWidth={panSize} mt={10} date={date} dunOverride={dunOverride} />
+                        {showJiPanel && <PillBox pan={qimenPan} maxWidth={panSize} mt={10} date={date} dunOverride={dunOverride} />}
                     </Flex>
                 </Flex>
             </Flex>
@@ -276,6 +280,8 @@ const PillBox = ({
     const [selectedFormation, setSelectedFormation] = React.useState("");
     const [selectedJiuDun, setSelectedJiuDun] = React.useState<"天遁" | "地遁" | "人遁" | "神遁" | "鬼遁" | "风遁" | "云遁" | "龙遁" | "虎遁" | "">("");
     const [stepSize, setStepSize] = React.useState<"two-hour" | "day">("two-hour");
+    const [timeStepSize, setTimeStepSize] = React.useState<"two-hour" | "day">("two-hour");
+    const [timeTypeFilter, setTimeTypeFilter] = React.useState<"" | "五不遇时" | "天显时格" | "时干入墓">("");
 
     const cells = pan.九宮;
     const hasKongWang = cells.some(cell => cell.是否空亡);
@@ -602,6 +608,32 @@ const PillBox = ({
         }
         return matches;
     }, [date, selectedJiuDun, stepSize, dunOverride]);
+    const timeTypeMatches = React.useMemo(() => {
+        if (!timeTypeFilter) {
+            return [] as Date[];
+        }
+        const typeMap: Record<Exclude<typeof timeTypeFilter, "">, "五不遇時" | "天顯時格" | "時干入墓"> = {
+            五不遇时: "五不遇時",
+            天显时格: "天顯時格",
+            时干入墓: "時干入墓",
+        };
+        const targetType = typeMap[timeTypeFilter];
+        const matches: Date[] = [];
+        const start = moment(date);
+        const end = moment(date).add(1, "year");
+        const step = timeStepSize === "two-hour" ? {value: 2, unit: "hours" as const} : {value: 1, unit: "days" as const};
+        let cursor = start.clone();
+        while (cursor.isSameOrBefore(end)) {
+            const pan = QimenUtil.create(Lunar.fromDate(cursor.toDate()), dunOverride ?? undefined);
+            const [, , dayStem, hourStem] = pan.八字;
+            const type = AstrologicalTimeUtil.getType(dayStem[0] as 天干, hourStem[0] as 天干, hourStem[1] as 地支);
+            if (type === targetType) {
+                matches.push(cursor.toDate());
+            }
+            cursor = cursor.add(step.value, step.unit);
+        }
+        return matches;
+    }, [date, timeTypeFilter, timeStepSize, dunOverride]);
     React.useEffect(() => {
         if (selectedFormation && !goodFormationOptions.includes(selectedFormation)) {
             setSelectedFormation("");
@@ -683,10 +715,14 @@ const PillBox = ({
                     ))}
             </Flex>
             <Flex mt={2} w="100%" flexDirection="column" alignItems="center" gap={2}>
-                <Flex gap={2} flexWrap="wrap" justifyContent="center">
+                <Grid w="100%" maxW="720px" templateColumns="repeat(3, minmax(0, 1fr))" columnGap={3} rowGap={2}>
                     <Select
                         size="sm"
-                        maxW="240px"
+                        w="100%"
+                        bg="white"
+                        borderColor="gray.300"
+                        borderWidth="1px"
+                        borderRadius="md"
                         value={selectedFormation}
                         onChange={event => setSelectedFormation(event.target.value)}
                         placeholder="选择吉格局"
@@ -697,11 +733,66 @@ const PillBox = ({
                             </option>
                         ))}
                     </Select>
-                    <Select size="sm" maxW="180px" value={stepSize} onChange={event => setStepSize(event.target.value as typeof stepSize)}>
+                    <Select
+                        size="sm"
+                        w="100%"
+                        bg="white"
+                        borderColor="gray.300"
+                        borderWidth="1px"
+                        borderRadius="md"
+                        value={selectedJiuDun}
+                        onChange={event => setSelectedJiuDun(event.target.value as typeof selectedJiuDun)}
+                        placeholder="选择九遁"
+                    >
+                        {["天遁", "地遁", "人遁", "神遁", "鬼遁", "风遁", "云遁", "龙遁", "虎遁"].map(option => (
+                            <option key={option} value={option}>
+                                {option}
+                            </option>
+                        ))}
+                    </Select>
+                    <Select
+                        size="sm"
+                        w="100%"
+                        bg="white"
+                        borderColor="gray.300"
+                        borderWidth="1px"
+                        borderRadius="md"
+                        value={timeTypeFilter}
+                        onChange={event => setTimeTypeFilter(event.target.value as typeof timeTypeFilter)}
+                        placeholder="选择吉时"
+                    >
+                        <option value="五不遇时">五不遇时</option>
+                        <option value="天显时格">天显时格</option>
+                        <option value="时干入墓">时干入墓</option>
+                    </Select>
+                    <Select
+                        size="sm"
+                        w="100%"
+                        bg="white"
+                        borderColor="gray.300"
+                        borderWidth="1px"
+                        borderRadius="md"
+                        value={stepSize}
+                        onChange={event => setStepSize(event.target.value as typeof stepSize)}
+                    >
                         <option value="two-hour">时辰</option>
                         <option value="day">每天</option>
                     </Select>
-                </Flex>
+                    <Box />
+                    <Select
+                        size="sm"
+                        w="100%"
+                        bg="white"
+                        borderColor="gray.300"
+                        borderWidth="1px"
+                        borderRadius="md"
+                        value={timeStepSize}
+                        onChange={event => setTimeStepSize(event.target.value as typeof timeStepSize)}
+                    >
+                        <option value="two-hour">时辰</option>
+                        <option value="day">每天</option>
+                    </Select>
+                </Grid>
                 {selectedFormation && (
                     <Flex flexDirection="column" w="100%" alignItems="center" fontSize="sm" color={textColor}>
                         {selectedPalaces.length ? (
@@ -728,25 +819,25 @@ const PillBox = ({
                         )}
                     </Flex>
                 )}
-                <Select
-                    size="sm"
-                    maxW="240px"
-                    value={selectedJiuDun}
-                    onChange={event => setSelectedJiuDun(event.target.value as typeof selectedJiuDun)}
-                    placeholder="选择九遁"
-                >
-                    {["天遁", "地遁", "人遁", "神遁", "鬼遁", "风遁", "云遁", "龙遁", "虎遁"].map(option => (
-                        <option key={option} value={option}>
-                            {option}
-                        </option>
-                    ))}
-                </Select>
                 {selectedJiuDun && (
                     <Flex flexDirection="column" w="100%" alignItems="center" fontSize="sm" color={textColor}>
                         {futureJiuDunMatches.length ? (
                             futureJiuDunMatches.map((match, index) => (
                                 <Text key={`${selectedJiuDun}-${match.palace}-${index}`}>
                                     {stepSize === "two-hour" ? formatDateTime(match.date) : formatDate(match.date)} {palaceDirection(match.palace)} {palaceDisplay(match.palace)}
+                                </Text>
+                            ))
+                        ) : (
+                            <Text>未来一年无匹配</Text>
+                        )}
+                    </Flex>
+                )}
+                {timeTypeFilter && (
+                    <Flex flexDirection="column" w="100%" alignItems="center" fontSize="sm" color={textColor}>
+                        {timeTypeMatches.length ? (
+                            timeTypeMatches.map((match, index) => (
+                                <Text key={`${timeTypeFilter}-${index}`}>
+                                    {timeStepSize === "two-hour" ? formatDateTime(match) : formatDate(match)}
                                 </Text>
                             ))
                         ) : (
