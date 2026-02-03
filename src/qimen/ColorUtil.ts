@@ -2,11 +2,11 @@ import type {九星, 八神, 八門, 地支, 天干} from "@/qimen/type";
 import type {ColorVariant} from "@/types/displayTypes";
 
 const simpleMap = {
-    wood: "green.600",
-    fire: "red.500",
-    earth: "orange.600",
-    metal: "orange.400",
-    water: "blue.600",
+    wood: "#31D618",
+    fire: "#FF073a",
+    earth: "#FFC42E",
+    metal: "#BDBDBD",
+    water: "#2323FF",
 };
 
 const neonMap = {
